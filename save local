@@ -1,0 +1,22 @@
+# Existing code for SSH connection...
+
+# After changing the hostname and before exiting the session
+session.sendline('show running-config')
+result = session.expect(['#', pexpect.TIMEOUT, pexpect.EOF])
+
+if result != 0:
+    print('--- FAILURE! retrieving running configuration')
+else:
+    running_config_ssh = session.before  # Capture the output
+
+    # Save the SSH running config to a file
+    with open(output_file_ssh, 'w') as file:
+        file.write(running_config_ssh)
+
+    print('--- Success! SSH running config saved to:', output_file_ssh)
+
+# Exit enable mode
+session.sendline('exit')
+
+# Close SSH session
+session.close()
